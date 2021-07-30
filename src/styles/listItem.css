@@ -1,0 +1,75 @@
+.taskList {
+  margin-top: 5%;
+}
+ul {
+  margin: 50px;
+  width: 100%;
+}
+
+li {
+  margin-left: 15%;
+  margin-bottom: 2%;
+  width: 60%;
+  height: 10vh;
+  font-size: medium;
+  background-color: #ffe3de;
+  border: none;
+
+  border-radius: 10px;
+  padding: 15px;
+  color: black;
+  font-size: 20px;
+}
+
+.isCompleted {
+  margin-left: 15%;
+  margin-bottom: 2%;
+  width: 60%;
+  height: 6vh;
+  font-size: medium;
+  background-color: #0a043c;
+  text-decoration: line-through;
+  border: none;
+
+  border-radius: 10px;
+  padding: 15px;
+  color: green;
+  font-size: 20px;
+}
+
+.isIncompleted {
+  margin-left: 15%;
+  margin-bottom: 2%;
+  width: 60%;
+  height: 6vh;
+  font-size: medium;
+  background-color: #ffe3de;
+  border: none;
+  box-shadow: 5px 5px 15px black;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 20px;
+}
+
+.btn-outline-success {
+  float: right;
+  padding: 4px 10px 4px 10px;
+
+  border: none;
+  cursor: pointer;
+  background-color: #383e56;
+  margin-left: 10px;
+  color: white;
+  width: 15%;
+}
+
+.btn-outline-danger {
+  float: right;
+  padding: 4px 10px 4px 10px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  background-color: #aa2b1d;
+  color: white;
+  width: 12%;
+}
