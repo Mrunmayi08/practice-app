@@ -20,16 +20,16 @@ jobs:
       #       - .
       - checkout
       # - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
-      # - aws-s3/sync:
-      #     arguments: |
-      #       --acl public-read \
-      #       --cache-control "max-age=86400"
-      #     aws-access-key-id: AWS_ACCESS_KEY
-      #     aws-region: AWS_REGION
-      #     aws-secret-access-key: AWS_SECRETE_KEY
-      #     from: C:\Users\Mrunmayi Patil\Desktop\practice-app\build
-      #     to: 's3://my-hosted-conten/prefix'
-      - run: aws s3 rm s3://my-hosted-conten/ --recursive && aws s3 cp ./build s3://my-hosted-conten/ --recursive --acl public-read
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-region: AWS_REGION
+          aws-secret-access-key: AWS_SECRETE_KEY
+          from: C:\Users\Mrunmayi Patil\Desktop\practice-app\build
+          to: 's3://my-hosted-conten'
+      # - run: aws s3 rm s3://my-hosted-conten/ --recursive && aws s3 cp ./build s3://my-hosted-conten/ --recursive --acl public-read
   deploy:
     machine:
         image: ubuntu-2004:202010-01
