@@ -30,7 +30,6 @@ jobs:
           aws-secret-access-key: AWS_SECRETE_KEY
           aws-region: AWS_REGION
       - run: aws --version
-      - run: aws eks update-kubeconfig --name erp-app-cluster
       - run: aws s3 sync ./build s3://my-hosted-conten            
   # deploy:
   #   machine:
