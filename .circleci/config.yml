@@ -109,11 +109,11 @@ workflows:
           filters:
             branches:
               only:
-                - circleci-project-setup
+                - development
       - deploy:
           requires:
             - build
           filters:
             branches:
               only:
-                - circleci-project-setup
+                - development
