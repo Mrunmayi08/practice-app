@@ -101,7 +101,15 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - circleci-project-setup
       - deploy:
           requires:
-            - build 
+            - build
+          filters:
+            branches:
+              only:
+                - circleci-project-setup             
