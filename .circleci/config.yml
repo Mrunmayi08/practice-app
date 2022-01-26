@@ -27,9 +27,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRETE_KEY
-          from: build
+          from: ../build
           to: 's3://my-hosted-conten/prefix'
-      - run: aws s3 sync ./build s3://my-hosted-conten
+      # - run: aws s3 sync ./build s3://my-hosted-conten
   deploy:
     machine:
         image: ubuntu-2004:202010-01
