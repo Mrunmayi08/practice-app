@@ -18,6 +18,16 @@ jobs:
           root: .
           paths:
             - .
+  aws_cli_setup:
+    working_directory: ~/repo
+    executor: aws-cli/default
+    steps:
+      - aws-cli/install
+      - aws-cli/configure:
+          profile-name: circle-ci
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_SECRETE_KEY
+          aws-region: AWS_REGION            
   deploy:
     machine:
       image: ubuntu-2004:202010-01
@@ -32,6 +42,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build
+      - aws_cli_setup
       - deploy:
           requires:
-            - build
+            - aws_cli_setup
