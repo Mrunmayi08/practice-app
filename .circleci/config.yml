@@ -18,10 +18,10 @@ jobs:
           root: .
           paths:
             - .
-    deploy:
-      machine:
-        image: ubuntu-2004:202010-01
-      steps:
+  deploy:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
       - attach_workspace:
           at: .
       - checkout
