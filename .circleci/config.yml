@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@0.1.13
+  aws-ecr: circleci/aws-ecr@4.0.1
 jobs:
   build:
     machine:
@@ -27,22 +28,27 @@ jobs:
           profile-name: circle-ci
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_SECRETE_KEY
-          aws-region: AWS_REGION            
-  deploy:
-    machine:
-      image: ubuntu-2004:202010-01
-    steps:
-      - attach_workspace:
-          at: .
-      - checkout
-      - run: aws s3 sync ./build s3://my-hosted-conten
+          aws-region: AWS_REGION
+      - run: aws --version
+      - run: aws eks update-kubeconfig --name erp-app-cluster
+      - run: aws s3 sync ./build s3://my-hosted-conten            
+  # deploy:
+  #   machine:
+  #     image: ubuntu-2004:202010-01
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - checkout
+  #     - run: aws s3 sync ./build s3://my-hosted-conten
     
 
 workflows:
   build_test_deploy:
     jobs:
       - build
-      - aws_cli_setup
+      - aws_cli_setup:
+          requires:
+            - build
       - deploy:
           requires:
             - aws_cli_setup
