@@ -8,6 +8,30 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Configure AWS Access Key ID
+          command: |
+            source ${BASH_ENV}
+            aws configure set aws_access_key_id \
+            $AWS_ACCESS_KEY \
+            --profile $PROFILE_NAME
+            echo "Print the value for $AWS_ACCESS_KEY $AWS_SECRETE_KEY"
+
+      - run:
+          name: Configure AWS Secret Access Key
+          command: |
+            source ${BASH_ENV}
+            aws configure set aws_secret_access_key \
+            $AWS_SECRETE_KEY \
+            --profile $PROFILE_NAME
+
+      - run:
+          name: Configure AWS default region
+          command: |
+            source ${BASH_ENV}
+            aws configure set region $AWS_REGION \
+            --profile $PROFILE_NAME
+     
+      - run:
           name: Installing AWS CLI
           command: |
             sudo apt-get update
@@ -18,18 +42,6 @@ jobs:
           root: .
           paths:
             - .
-      - checkout
-      # - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
-      - aws-s3/sync:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-region: AWS_REGION
-          aws-secret-access-key: AWS_SECRETE_KEY
-          # from: bucket
-          # to: 's3://my-hosted-conten/prefix'
-      - run: aws s3 sync ./build s3://my-hosted-conten
   deploy:
     machine:
         image: ubuntu-2004:202010-01
