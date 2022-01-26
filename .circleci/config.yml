@@ -12,7 +12,6 @@ jobs:
           command: |
             aws configure set aws_access_key_id \
             $AWS_ACCESS_KEY \
-            --profile $PROFILE_NAME
             echo "Print the value for $AWS_ACCESS_KEY $AWS_SECRETE_KEY"
 
       - run:
@@ -20,13 +19,11 @@ jobs:
           command: |
             aws configure set aws_secret_access_key \
             $AWS_SECRETE_KEY \
-            --profile $PROFILE_NAME
 
       - run:
           name: Configure AWS default region
           command: |
             aws configure set region $AWS_REGION \
-            --profile $PROFILE_NAME
      
       - run:
           name: Installing AWS CLI
