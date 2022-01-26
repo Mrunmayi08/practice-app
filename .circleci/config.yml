@@ -30,14 +30,22 @@ jobs:
           aws-secret-access-key: AWS_SECRETE_KEY
           aws-region: AWS_REGION
       - run: aws --version
-      - run: aws s3 sync ./build s3://my-hosted-conten            
+      - run: aws s3 sync C:\Users\Mrunmayi Patil\Desktop\practice-app\build s3://my-hosted-conten            
   # deploy:
   #   machine:
   #     image: ubuntu-2004:202010-01
+  #   working_directory: ~/repo
+  #   executor: aws-cli/default
   #   steps:
   #     - attach_workspace:
   #         at: .
   #     - checkout
+  #     - aws-cli/configure:
+  #         profile-name: circle-ci
+  #         aws-access-key-id: AWS_ACCESS_KEY
+  #         aws-secret-access-key: AWS_SECRETE_KEY
+  #         aws-region: AWS_REGION
+  #     - run: aws --version          
   #     - run: aws s3 sync ./build s3://my-hosted-conten
     
 
