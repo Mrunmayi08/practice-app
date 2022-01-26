@@ -64,10 +64,16 @@ version: 2.1
 jobs:
   build:
     working_directory: ~/repo
-    docker:
-      - image: circleci/node:12-browsers
+    machine:
+       image: ubuntu-2004:202010-01
     steps:
       - checkout
+      - run:
+          name: Installing AWS CLI
+          command: |
+             sudo apt-get update
+             sudo apt install python3-pip
+             sudo pip3 install awsebcli --upgrade      
       - run:
           name: Install dependencies
           command: npm install
@@ -81,8 +87,8 @@ jobs:
             - .
   deploy:
     working_directory: ~/repo
-    docker:
-      - image: innovatorjapan/awscli:latest
+    machine:
+        image: ubuntu-2004:202010-01
     steps:
       - attach_workspace:
           at: .
@@ -97,11 +103,11 @@ workflows:
           filters:
             branches:
               only:
-                - development 
+                - development
       - deploy:
           requires:
             - build
           filters:
             branches:
               only:
-                - circleci-project-setup 
+                - development
