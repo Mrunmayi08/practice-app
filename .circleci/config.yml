@@ -68,17 +68,9 @@ jobs:
       - image: circleci/node:12-browsers
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
       - run:
           name: Install dependencies
           command: npm install
-      - save_cache:
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
       - run:
           name: Build
           command: |
@@ -105,11 +97,11 @@ workflows:
           filters:
             branches:
               only:
-                - circleci-project-setup
+                - development 
       - deploy:
           requires:
             - build
           filters:
             branches:
               only:
-                - circleci-project-setup             
+                - circleci-project-setup 
