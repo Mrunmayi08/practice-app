@@ -6,20 +6,20 @@ jobs:
     machine:
       image: ubuntu-2004:202010-01
     steps:
-      # - checkout
-      # - run:
-      #     name: Installing AWS CLI
-      #     command: |
-      #       sudo apt-get update
-      #       sudo apt install python3-pip
-      #       sudo pip3 install awsebcli --upgrade
-      # - run: npm install && npm run build
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - .
       - checkout
-      - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
+      - run:
+          name: Installing AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt install python3-pip
+            sudo pip3 install awsebcli --upgrade
+      - run: npm install && npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+      - checkout
+      # - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -27,12 +27,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRETE_KEY
-          from: bucket
-          to: 's3://my-hosted-conten/prefix'
-      - aws-s3/copy:
-          arguments: '--dryrun'
-          from: bucket/build_asset.txt
-          to: 's3://my-hosted-conten'
+          # from: bucket
+          # to: 's3://my-hosted-conten/prefix'
+      - run: aws s3 sync ./build s3://my-hosted-conten
   deploy:
     machine:
         image: ubuntu-2004:202010-01
