@@ -1,61 +1,119 @@
+# version: 2.1
+# orbs:
+#   aws-cli: circleci/aws-cli@0.1.13
+#   aws-ecr: circleci/aws-ecr@4.0.1
+# jobs:
+#   build:
+#     machine:
+#       image: ubuntu-2004:202010-01
+#     steps:
+#       - checkout
+#       - run:
+#           name: Installing AWS CLI
+#           command: |
+#             sudo apt-get update
+#             sudo apt install python3-pip
+#             sudo pip3 install awsebcli --upgrade
+#       - run: npm install && npm run build
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - .
+#   aws_cli_setup:
+#     working_directory: ~/repo
+#     executor: aws-cli/default
+#     steps:
+#       - aws-cli/install
+#       - aws-cli/configure:
+#           profile-name: circle-ci
+#           aws-access-key-id: AWS_ACCESS_KEY
+#           aws-secret-access-key: AWS_SECRETE_KEY
+#           aws-region: AWS_REGION
+#       - run: aws --version
+#       - run: aws s3 sync C:\Users\Mrunmayi Patil\Desktop\practice-app\build s3://my-hosted-conten            
+#   # deploy:
+#   #   machine:
+#   #     image: ubuntu-2004:202010-01
+#   #   working_directory: ~/repo
+#   #   executor: aws-cli/default
+#   #   steps:
+#   #     - attach_workspace:
+#   #         at: .
+#   #     - checkout
+#   #     - aws-cli/configure:
+#   #         profile-name: circle-ci
+#   #         aws-access-key-id: AWS_ACCESS_KEY
+#   #         aws-secret-access-key: AWS_SECRETE_KEY
+#   #         aws-region: AWS_REGION
+#   #     - run: aws --version          
+#   #     - run: aws s3 sync ./build s3://my-hosted-conten
+    
+
+# workflows:
+#   build_test_deploy:
+#     jobs:
+#       - build
+#       - aws_cli_setup:
+#           requires:
+#             - build
+#       # - deploy:
+#       #     requires:
+#       #       - aws_cli_setup
+
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@0.1.13
-  aws-ecr: circleci/aws-ecr@4.0.1
 jobs:
   build:
-    machine:
-      image: ubuntu-2004:202010-01
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:12-browsers
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
+          - v1-dependencies-
       - run:
-          name: Installing AWS CLI
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Build
           command: |
-            sudo apt-get update
-            sudo apt install python3-pip
-            sudo pip3 install awsebcli --upgrade
-      - run: npm install && npm run build
+            if [ $CIRCLE_BRANCH = 'circleci-project-setup' ]; then
+              npm run build
+            fi
       - persist_to_workspace:
           root: .
           paths:
             - .
-  aws_cli_setup:
+  deploy:
     working_directory: ~/repo
-    executor: aws-cli/default
+    docker:
+      - image: innovatorjapan/awscli:latest
     steps:
-      - aws-cli/install
-      - aws-cli/configure:
-          profile-name: circle-ci
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_SECRETE_KEY
-          aws-region: AWS_REGION
-      - run: aws --version
-      - run: aws s3 sync C:\Users\Mrunmayi Patil\Desktop\practice-app\build s3://my-hosted-conten            
-  # deploy:
-  #   machine:
-  #     image: ubuntu-2004:202010-01
-  #   working_directory: ~/repo
-  #   executor: aws-cli/default
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-  #     - checkout
-  #     - aws-cli/configure:
-  #         profile-name: circle-ci
-  #         aws-access-key-id: AWS_ACCESS_KEY
-  #         aws-secret-access-key: AWS_SECRETE_KEY
-  #         aws-region: AWS_REGION
-  #     - run: aws --version          
-  #     - run: aws s3 sync ./build s3://my-hosted-conten
-    
-
+      - attach_workspace:
+          at: .
+      - run:
+          name: Deploy
+          command: |
+            if [ $CIRCLE_BRANCH = 'circleci-project-setup' ]; then
+              aws s3 sync build s3://my-hosted-conten --delete --exact-timestamps;
+            fi
 workflows:
-  build_test_deploy:
+  build_and_deploy:
     jobs:
-      - build
-      - aws_cli_setup:
+      - build:
+          filters:
+            branches:
+              only:
+                - circleci-project-setup
+      - deploy:
           requires:
             - build
-      # - deploy:
-      #     requires:
-      #       - aws_cli_setup
+          filters:
+            branches:
+              only:
+                - circleci-project-setup
