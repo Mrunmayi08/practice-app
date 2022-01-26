@@ -1,0 +1,113 @@
+# version: 2.1
+# orbs:
+#   aws-cli: circleci/aws-cli@0.1.13
+#   aws-ecr: circleci/aws-ecr@4.0.1
+# jobs:
+#   build:
+#     machine:
+#       image: ubuntu-2004:202010-01
+#     steps:
+#       - checkout
+#       - run:
+#           name: Installing AWS CLI
+#           command: |
+#             sudo apt-get update
+#             sudo apt install python3-pip
+#             sudo pip3 install awsebcli --upgrade
+#       - run: npm install && npm run build
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - .
+#   aws_cli_setup:
+#     working_directory: ~/repo
+#     executor: aws-cli/default
+#     steps:
+#       - aws-cli/install
+#       - aws-cli/configure:
+#           profile-name: circle-ci
+#           aws-access-key-id: AWS_ACCESS_KEY
+#           aws-secret-access-key: AWS_SECRETE_KEY
+#           aws-region: AWS_REGION
+#       - run: aws --version
+#       - run: aws s3 sync C:\Users\Mrunmayi Patil\Desktop\practice-app\build s3://my-hosted-conten            
+#   # deploy:
+#   #   machine:
+#   #     image: ubuntu-2004:202010-01
+#   #   working_directory: ~/repo
+#   #   executor: aws-cli/default
+#   #   steps:
+#   #     - attach_workspace:
+#   #         at: .
+#   #     - checkout
+#   #     - aws-cli/configure:
+#   #         profile-name: circle-ci
+#   #         aws-access-key-id: AWS_ACCESS_KEY
+#   #         aws-secret-access-key: AWS_SECRETE_KEY
+#   #         aws-region: AWS_REGION
+#   #     - run: aws --version          
+#   #     - run: aws s3 sync ./build s3://my-hosted-conten
+    
+
+# workflows:
+#   build_test_deploy:
+#     jobs:
+#       - build
+#       - aws_cli_setup:
+#           requires:
+#             - build
+#       # - deploy:
+#       #     requires:
+#       #       - aws_cli_setup
+
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/repo
+    machine:
+       image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run:
+          name: Installing AWS CLI
+          command: |
+             sudo apt-get update
+             sudo apt install python3-pip
+             sudo pip3 install awsebcli --upgrade      
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: |
+              npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  deploy:
+    working_directory: ~/repo
+    machine:
+        image: ubuntu-2004:202010-01
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Deploy
+          command: |
+              aws s3 sync build s3://my-hosted-conten --delete --exact-timestamps;
+workflows:
+  build_and_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - development
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - development
