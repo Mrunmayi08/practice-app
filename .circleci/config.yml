@@ -49,6 +49,6 @@ workflows:
       - aws_cli_setup:
           requires:
             - build
-      - deploy:
-          requires:
-            - aws_cli_setup
+      # - deploy:
+      #     requires:
+      #       - aws_cli_setup
