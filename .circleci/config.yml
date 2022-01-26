@@ -29,7 +29,7 @@ jobs:
       #     aws-secret-access-key: AWS_SECRETE_KEY
       #     from: bucket
       #     to: 's3://my-hosted-conten/prefix'
-      - run: aws s3 sync ./build s3://my-hosted-conten
+      - run: aws s3 sync C:\Users\Mrunmayi Patil\Desktop\practice-app\build s3://my-hosted-conten
   deploy:
     machine:
         image: ubuntu-2004:202010-01
